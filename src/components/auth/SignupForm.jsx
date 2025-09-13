@@ -33,16 +33,32 @@ export default function SignupForm() {
       return
     }
 
-    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      setUsernameStatus('Username can only contain letters, numbers, and underscores')
+    if (!/^[a-zA-Z0-9_.]+$/.test(username)) {
+      setUsernameStatus('Username can only contain letters, numbers, underscores, and dots')
       return
     }
 
-    const { available } = await checkUsernameAvailability(username)
-    if (available) {
-      setUsernameStatus('✓ Username is available')
-    } else {
-      setUsernameStatus('✗ Username is already taken')
+    // Check if username starts or ends with a dot
+    if (username.startsWith('.') || username.endsWith('.')) {
+      setUsernameStatus('Username cannot start or end with a dot')
+      return
+    }
+
+    // Check if username has consecutive dots
+    if (username.includes('..')) {
+      setUsernameStatus('Username cannot have consecutive dots')
+      return
+    }
+
+    try {
+      const { available } = await checkUsernameAvailability(username)
+      if (available) {
+        setUsernameStatus('✓ Username is available')
+      } else {
+        setUsernameStatus('✗ Username is already taken')
+      }
+    } catch (error) {
+      setUsernameStatus('✗ Error checking username availability')
     }
   }
 

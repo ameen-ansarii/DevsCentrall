@@ -81,12 +81,21 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (email, password, username) => {
     try {
+      // Check if Supabase is configured
+      if (!isSupabaseConfigured) {
+        throw new Error('Database connection not configured. Please check your environment variables.')
+      }
+
       // Check if username is already taken
-      const { data: existingUser } = await supabase
+      const { data: existingUser, error: checkError } = await supabase
         .from('profiles')
         .select('username')
         .eq('username', username)
         .single()
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw new Error('Failed to check username availability. Please try again.')
+      }
 
       if (existingUser) {
         throw new Error('Username is already taken')
@@ -104,7 +113,18 @@ export const AuthProvider = ({ children }) => {
         }
       })
 
-      if (error) throw error
+      if (error) {
+        // Provide more specific error messages
+        if (error.message.includes('already registered')) {
+          throw new Error('An account with this email already exists')
+        } else if (error.message.includes('Invalid email')) {
+          throw new Error('Please enter a valid email address')
+        } else if (error.message.includes('Password')) {
+          throw new Error('Password must be at least 6 characters long')
+        } else {
+          throw new Error(error.message || 'Failed to create account. Please try again.')
+        }
+      }
 
       // Create user profile
       if (data.user) {
@@ -121,11 +141,13 @@ export const AuthProvider = ({ children }) => {
 
         if (profileError) {
           console.error('Error creating profile:', profileError)
+          // Don't throw here as the user account was created successfully
         }
       }
 
       return { data, error: null }
     } catch (error) {
+      console.error('Signup error:', error)
       return { data: null, error }
     }
   }
@@ -179,6 +201,11 @@ export const AuthProvider = ({ children }) => {
 
   const checkUsernameAvailability = async (username) => {
     try {
+      // Check if Supabase is configured
+      if (!isSupabaseConfigured) {
+        return { available: false, error: 'Database not configured' }
+      }
+
       const { data, error } = await supabase
         .from('profiles')
         .select('username')
@@ -194,7 +221,8 @@ export const AuthProvider = ({ children }) => {
       }
       return { available: true }
     } catch (error) {
-      return { available: false }
+      console.error('Error checking username availability:', error)
+      return { available: false, error: 'Failed to check username' }
     }
   }
 
