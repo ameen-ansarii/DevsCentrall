@@ -18,7 +18,7 @@ export default function HomePage() {
     <>
       <section className="text-center py-12 md:py-20">
         <h1 className="font-jakarta text-4xl sm:text-5xl md:text-7xl font-extrabold mb-4 tracking-tighter text-white/90">
-          The Tech News <br /> You Need to Know.
+          The Tech News <br /> You want to know.
         </h1>
         <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-8">
           Curated articles on AI, Startups, and Development. <br /> Straight to the point, no fluff.
