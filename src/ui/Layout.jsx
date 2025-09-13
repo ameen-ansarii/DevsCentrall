@@ -1,11 +1,7 @@
-import { NavLink, Outlet, Link } from 'react-router-dom'
+import { NavLink, Outlet } from 'react-router-dom'
 import { useEffect, useRef } from 'react'
-import { useAuth } from '../contexts/AuthContext'
-import UserProfile from '../components/UserProfile'
 
 function Header() {
-  const { user } = useAuth()
-
   return (
     <header className="container mx-auto px-6 pt-8 md:pt-12 relative z-10 flex items-center justify-between">
       <div className="flex items-center space-x-2">
@@ -13,24 +9,6 @@ function Header() {
         <div className="text-2xl font-jakarta font-bold text-white">DevsCentral</div>
       </div>
       <div className="flex items-center space-x-4">
-        {user ? (
-          <UserProfile />
-        ) : (
-          <div className="flex items-center space-x-3">
-            <Link
-              to="/login"
-              className="text-gray-300 hover:text-white transition-colors duration-200 text-sm font-medium"
-            >
-              Sign In
-            </Link>
-            <Link
-              to="/signup"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
-            >
-              Sign Up
-            </Link>
-          </div>
-        )}
         <a href="https://www.buymeacoffee.com/ameenxv" target="_blank" rel="noopener noreferrer" className="text-white header-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-coffee"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h14v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
           <span className="header-icon-label">Coffee</span>
@@ -48,7 +26,7 @@ function Footer() {
   return (
     <footer className="mt-20 py-10 border-t border-gray-800 relative z-10">
       <div className="container mx-auto px-6 text-center text-gray-400">
-        <p>&copy; 2025 TechHub. All rights reserved.</p>
+        <p>&copy; 2025 DevsCentral. All rights reserved.</p>
       </div>
     </footer>
   )
@@ -56,11 +34,14 @@ function Footer() {
 
 function FloatingDock() {
   const dockRef = useRef(null)
+  
   useEffect(() => {
     const dock = dockRef.current
     if (!dock) return
+    
     const items = Array.from(dock.querySelectorAll('.dock-item'))
-    function onMove(e){
+    
+    function onMove(e) {
       const rect = dock.getBoundingClientRect()
       const mouseX = e.clientX - rect.left
       items.forEach((item) => {
@@ -73,19 +54,23 @@ function FloatingDock() {
         item.style.transition = 'transform 0.1s'
       })
     }
-    function onLeave(){
+    
+    function onLeave() {
       items.forEach((item) => {
         item.style.transform = 'scale(1)'
         item.style.transition = 'transform 0.2s'
       })
     }
+    
     dock.addEventListener('mousemove', onMove)
     dock.addEventListener('mouseleave', onLeave)
+    
     return () => {
       dock.removeEventListener('mousemove', onMove)
       dock.removeEventListener('mouseleave', onLeave)
     }
   }, [])
+  
   const links = [
     { title: 'Home', href: '/', icon: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -121,21 +106,33 @@ function FloatingDock() {
 
 export default function Layout() {
   const orbRef = useRef(null)
+  
   useEffect(() => {
     const orb = document.getElementById('interactive-orb')
     if (!orb) return
+    
     let curX = 0, curY = 0, tgX = 0, tgY = 0
-    function move(){
+    
+    function move() {
       curX += (tgX - curX) / 20
       curY += (tgY - curY) / 20
       orb.style.transform = `translate(${Math.round(curX)}px, ${Math.round(curY)}px)`
       requestAnimationFrame(move)
     }
-    function onMouse(e){ tgX = e.clientX; tgY = e.clientY }
+    
+    function onMouse(e) { 
+      tgX = e.clientX
+      tgY = e.clientY 
+    }
+    
     window.addEventListener('mousemove', onMouse)
     move()
-    return () => { window.removeEventListener('mousemove', onMouse) }
+    
+    return () => { 
+      window.removeEventListener('mousemove', onMouse) 
+    }
   }, [])
+  
   return (
     <div data-page="react">
       <Header />
@@ -144,9 +141,22 @@ export default function Layout() {
       </main>
       <Footer />
       <FloatingDock />
-      <div id="interactive-orb" aria-hidden="true" style={{position:'fixed', top:0, left:0, width:40, height:40, borderRadius:9999, background:'radial-gradient(circle at center, rgba(163,113,247,0.25), rgba(163,113,247,0) 70%)', pointerEvents:'none', transform:'translate(-100px,-100px)', zIndex:5}} />
+      <div 
+        id="interactive-orb" 
+        aria-hidden="true" 
+        style={{
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          width: 40, 
+          height: 40, 
+          borderRadius: 9999, 
+          background: 'radial-gradient(circle at center, rgba(163,113,247,0.25), rgba(163,113,247,0) 70%)', 
+          pointerEvents: 'none', 
+          transform: 'translate(-100px,-100px)', 
+          zIndex: 5
+        }} 
+      />
     </div>
   )
 }
-
-
