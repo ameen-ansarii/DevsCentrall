@@ -77,10 +77,19 @@ export default function ProfilePage() {
 
   const handleSignOut = async () => {
     try {
-      await signOut()
+      const { error } = await signOut()
+      
+      if (error) {
+        console.error('Error signing out:', error)
+        alert('Failed to sign out: ' + error.message)
+        return
+      }
+      
+      // Success - redirect to home
       window.location.href = '/'
     } catch (error) {
       console.error('Error signing out:', error)
+      alert('Failed to sign out: ' + error.message)
     }
   }
 

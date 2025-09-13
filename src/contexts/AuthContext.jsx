@@ -188,8 +188,28 @@ export const AuthProvider = ({ children }) => {
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    return { error }
+    try {
+      // Check if Supabase is configured
+      if (!isSupabaseConfigured) {
+        throw new Error('Database connection not configured. Please check your environment variables.')
+      }
+
+      const { error } = await supabase.auth.signOut()
+      
+      if (error) {
+        console.error('Sign out error:', error)
+        throw error
+      }
+
+      // Clear local state
+      setUser(null)
+      setUserProfile(null)
+      
+      return { error: null }
+    } catch (error) {
+      console.error('Sign out failed:', error)
+      return { error }
+    }
   }
 
   const resetPassword = async (email) => {

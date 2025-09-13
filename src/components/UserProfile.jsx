@@ -21,11 +21,20 @@ export default function UserProfile() {
 
   const handleSignOut = async () => {
     try {
-      await signOut()
       setShowDropdown(false)
+      const { error } = await signOut()
+      
+      if (error) {
+        console.error('Error signing out:', error)
+        alert('Failed to sign out: ' + error.message)
+        return
+      }
+      
+      // Success - navigate to home
       navigate('/')
     } catch (error) {
       console.error('Error signing out:', error)
+      alert('Failed to sign out: ' + error.message)
     }
   }
 

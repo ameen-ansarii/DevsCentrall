@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import OTPVerification from './OTPVerification'
+import DebugSupabase from '../DebugSupabase'
 
 export default function SignupForm() {
   const [formData, setFormData] = useState({
@@ -150,6 +151,7 @@ export default function SignupForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
+        <DebugSupabase />
         <div className="text-center">
           <img src="/devscentral.jpg" alt="DevsCentral" className="mx-auto h-16 w-16 rounded-lg mb-4" />
           <h2 className="text-3xl font-bold text-white">Create your account</h2>
